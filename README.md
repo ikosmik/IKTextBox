@@ -11,3 +11,75 @@ Once you are done typing, touch 'am done' and the IKTextBox passes the typed-in 
 
 ![alt tag](https://lh4.googleusercontent.com/-jNEt465zLSE/UimXkRcRgMI/AAAAAAAABH4/hqkSaihXCAc/s480/Screenshot%25202013.09.06%252014.15.08.jpg)
 
+
+
+USAGE IN CODE
+
+IN .h FILE
+
+```
+ ...
+ // STEP 1 : Import the View_IKTextBox.h file
+ #import "View_IKTextBox.h"
+ ...
+ ...
+ // STEP 2 : Implement the delegate
+ @interface MyPage : UIViewController <IKTextBoxDelegate>
+ ...
+ ...
+ // STEP 3 : Create a class variable to hold the View_IKTextBox
+ @property (nonatomic, strong) View_IKTextBox *viewTextBox;
+ ...
+ ...
+ @end
+
+
+
+IN .m FILE
+<code>
+// STEP 4 : Map this class as the 'delegate' for the UITextField / UITextView component in storyboard
+...
+...
+// STEP 5 : Implement textFieldDidBeginEditing
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        // Set the appropriate placeholder text
+        [self showViewIKTextBoxWithText : text
+                      IsTextPlaceholder : isItPlaceholder
+                             WithSecure : secure];
+    }
+}
+
+
+// STEP 6 : THEN DISPLAY THE IKTEXTBOX COMPONENT 
+#pragma mark - IKTextBoxDelegate Handler
+
+/**
+ * Displays the View_IKTextBox
+ * which shows a text view for easy entry of text
+ */
+-(void) showViewIKTextBoxWithText : (NSString *) text
+                IsTextPlaceholder : (BOOL) isItPlaceHolder
+                       WithSecure : (BOOL) isItSecure {
+    
+    if ((self.viewTextBox == nil) || (self.viewTextBox == NULL)) {
+        self.viewTextBox = [[View_IKTextBox alloc] initWithNibName:@"View_IKTextBox" bundle:nil];
+        self.viewTextBox.delegate = self;
+    }
+    [self.viewTextBox.view setFrame:[[UIScreen mainScreen] bounds]];
+    [self.viewConnProfilesMgr.view addSubview:self.viewTextBox.view];
+    [self.viewTextBox initializeWithText : text
+                       IsTextPlaceholder : isItPlaceHolder
+                              WithSecure : isItSecure];
+}
+
+
+// STEP 7 : Implement the IKTextViewDelegate method
+/**
+* A delegate method called when the user's done with the text entry in View_IKTextBox
+*/
+-(void) doneWithTextEntry : (NSString *)text {
+      [self.myTextField setText:text];
+}
+
+```
